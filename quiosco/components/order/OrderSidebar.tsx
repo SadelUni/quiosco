@@ -1,9 +1,23 @@
-import React from 'react'
+import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/src/lib/prisma";
+import CategorieIcon from "../ui/CategorieIcon";
 
-export default function OrderSidebar() {
+async function getCategories() {
+  const categories = await prisma.category.findMany();
+  return categories;
+}
+
+export default async function OrderSidebar() {
+  const categories = await getCategories();
+
+  await getCategories();
   return (
-    <aside className='md:w-72 md:h-screen bg-white'>
-        OrderSideBar
+    <aside className="md:w-72 md:h-screen bg-white">
+      <nav className="mt-10">
+        {categories.map((category) => (
+          <CategorieIcon key={category.id} category={category} />
+        ))}
+      </nav>
     </aside>
-  )
+  );
 }
