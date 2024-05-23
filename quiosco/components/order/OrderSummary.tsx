@@ -2,11 +2,33 @@
 import { useStore } from "@/src/utils/store";
 import React from "react";
 import ProductsDetails from "./ProductsDetails";
+import { formatCurrency } from "@/src/utils";
+import { OrderSchema } from "@/src/schema";
+import { createOrderAction } from "@/actions/create-order-actions";
+import { toast } from "react-toastify";
 
 export default function OrderSummary() {
   const { order } = useStore((state) => state);
 
-  console.log(order);
+  const handleCreateOrder = async (formData: FormData) => {
+    const data = {
+      name: formData.get("name"),
+      total: order.reduce((acc, item) => acc + item.subtotal, 0),
+      products: order.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+      })),
+    };
+
+
+
+    const response = await createOrderAction(data);
+    if (response?.errors) {
+      response.errors.forEach((issue) => {
+        toast.error(issue.message);
+      });
+    }
+  };
 
   return (
     <aside className="lg:h-screen lg:overflow-y-scroll md:w-64 lg:w-96 p-5">
@@ -23,6 +45,36 @@ export default function OrderSummary() {
           {order.map((item) => (
             <ProductsDetails key={item.id} item={item} />
           ))}
+
+          <p className="text-2xl text-amber-500 font-black mt-5">
+            <span className="font-bold">Total:</span>{" "}
+            {formatCurrency(
+              order.reduce((acc, item) => acc + item.subtotal, 0)
+            )}
+          </p>
+
+          <form className="w-full mt-10 space-y-5" action={handleCreateOrder}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Nombre"
+              className="w-full bg-gray-100 p-3 rounded-lg
+                focus:outline-none focus:ring-2 focus:ring-amber-500
+                border border-gray-500
+              "
+            />
+
+            <input
+              type="submit"
+              className="w-full bg-amber-500 text-white font-bold py-3 rounded-lg hover:bg-amber-600 transition duration-200 text-center"
+              value={
+                "Pagar " +
+                formatCurrency(
+                  order.reduce((acc, item) => acc + item.subtotal, 0)
+                )
+              }
+            />
+          </form>
         </div>
       )}
     </aside>
