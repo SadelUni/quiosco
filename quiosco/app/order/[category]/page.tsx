@@ -1,6 +1,7 @@
 import React from "react";
 import { prisma } from "@/src/lib/prisma";
 import ProductCard from "@/components/products/ProductCard";
+import Heading from "@/components/ui/Heading";
 
 async function getProductsByCategory(category: string) {
   const products = await prisma.product.findMany({
@@ -23,11 +24,8 @@ export default async function OrderPage({
 
   return (
     <>
-      
-      <h1
-        className="text-4xl font-bold text-amber-500 my-10"
-      >Elige y personaliza tus pedidos</h1>
-      
+      <Heading> Elige y personaliza tus pedidos</Heading>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 items-start">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
