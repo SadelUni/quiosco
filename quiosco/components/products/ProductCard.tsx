@@ -1,6 +1,6 @@
 import { Product } from "@prisma/client";
 import React from "react";
-import { formatCurrency } from "../../src/utils/index";
+import { formatCurrency, getImagePath } from "../../src/utils/index";
 import Image from "next/image";
 import AddProductsButton from "./AddProductsButton";
 
@@ -9,10 +9,13 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({ product }: ProductCardProps) {
+
+  const imageUrl = getImagePath(product.image)
+
   return (
     <div className="bg-white border rounded-lg shadow-lg">
       <Image
-        src={`/products/${product.image}.jpg`}
+        src={imageUrl}
         alt={product.name}
         width={300}
         height={300}

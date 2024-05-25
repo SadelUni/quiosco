@@ -24,3 +24,24 @@ export const OrderIdSchema = z.object({
     })
 
 })
+
+export const SearchProductSchema = z.object({
+    search: z.string().min(1, "La búsqueda no puede estar vacía")
+    .trim()
+    
+})
+
+export const CreateProductSchema = z.object({
+    name: z.string().min(1, "El nombre no puede estar vacío"),
+    price: z.string().transform((value =>
+        parseInt(value)
+    )).refine(value => value > 0, {
+        message: "El precio debe ser mayor a 0"
+    }),
+    categoryId:z.string().transform((value =>
+        parseInt(value)
+    )).refine(value => value > 0, {
+        message: "La categoría es obligaroia"
+    }),
+    image: z.string().min(1, "La imagen es obligatoria")
+})
